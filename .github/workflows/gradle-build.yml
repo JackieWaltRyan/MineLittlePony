@@ -23,7 +23,7 @@ jobs:
           java-version: 8
 
       - name: Build with Gradle
-        run: ./gradlew shadowJar
+        run: ./gradlew setupDecompWorkspace shadowJar --no-daemon --stacktrace
 
       - name: Upload built mod artifact
         uses: actions/upload-artifact@v4
