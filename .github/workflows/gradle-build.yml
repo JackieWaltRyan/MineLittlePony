@@ -22,8 +22,19 @@ jobs:
           distribution: temurin
           java-version: 8
 
-      - name: Build with Gradle
-        run: ./gradlew setupDecompWorkspace shadowJar --no-daemon --stacktrace
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-1.12.2-${{ hashFiles('build.gradle', 'gradle.properties', 'gradle/wrapper/gradle-wrapper.properties') }}
+
+      - name: Setup decomp workspace
+        run: ./gradlew setupDecompWorkspace --no-daemon --stacktrace
+
+      - name: Build shadowJar
+        run: ./gradlew shadowJar --no-daemon --stacktrace
 
       - name: Upload built mod artifact
         uses: actions/upload-artifact@v4

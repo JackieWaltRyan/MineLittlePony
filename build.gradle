@@ -28,6 +28,9 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 repositories {
+    flatDir {
+        dirs 'libs'
+    }
     mavenCentral()
     maven {
         name = 'forge'
