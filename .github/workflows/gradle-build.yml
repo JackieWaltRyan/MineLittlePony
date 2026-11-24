@@ -33,12 +33,12 @@ jobs:
       - name: Setup decomp workspace
         run: ./gradlew setupDecompWorkspace --no-daemon --stacktrace
 
-      - name: Build shadowJar
-        run: ./gradlew shadowJar --no-daemon --stacktrace
+      - name: Build and reobfuscate mod
+        run: ./gradlew reobfShadowJar --no-daemon --stacktrace
 
       - name: Upload built mod artifact
         uses: actions/upload-artifact@v4
         with:
-          name: MineLittlePony-build
+          name: MineLittlePony
           path: build/libs/*
           if-no-files-found: error
