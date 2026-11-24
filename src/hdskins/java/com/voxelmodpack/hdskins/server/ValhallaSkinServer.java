@@ -42,9 +42,6 @@ public class ValhallaSkinServer implements SkinServer {
     private transient String accessToken;
 
     public ValhallaSkinServer(String address) {
-        if (address.startsWith("http:")) {
-            address = address.replace("http:", "https:");
-        }
         this.address = address;
     }
 
@@ -195,7 +192,7 @@ public class ValhallaSkinServer implements SkinServer {
 
     @Override
     public String toString() {
-        return new IndentedToStringStyle.Builder(this)
+        return new IndentedToStringStyle.Builder("Minequestria")
                 .append("address", address)
                 .toString();
     }

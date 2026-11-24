@@ -37,8 +37,7 @@ public class LiteModHDSkins implements InitCompleteListener, ViewportListener, C
 
     @Expose
     public List<SkinServer> skin_servers = Lists.newArrayList(
-            new ValhallaSkinServer("https://skins.minelittlepony-mod.com"),
-            new YggdrasilSkinServer()
+            new ValhallaSkinServer("http://localhost:8080")
     );
 
     @Expose
