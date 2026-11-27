@@ -179,19 +179,29 @@ public class SkinUploader implements Closeable {
     }
 
     public CompletableFuture<Void> uploadSkin(String statusMsg) {
+        return uploadSkin(statusMsg, null);
+    }
+
+    public CompletableFuture<Void> uploadSkin(String statusMsg, String password) {
         sendingSkin = true;
         status = statusMsg;
 
         return CompletableFuture.runAsync(() -> {
             try {
-                gateway.performSkinUpload(new SkinUpload(mc.getSession(), skinType, localSkin == null ? null : localSkin.toURI(), skinMetadata));
+                gateway.performSkinUpload(new SkinUpload(
+                        mc.getSession(),
+                        skinType,
+                        localSkin == null ? null : localSkin.toURI(),
+                        skinMetadata,
+                        password
+                ));
                 setError(null);
             } catch (Exception e) {
                 handleException(e);
             }
         }, HDSkinManager.skinUploadExecutor).thenRunAsync(this::fetchRemote);
     }
-
+    
     public PreviewTexture getServerTexture() {
         return remotePlayer.getLocal(skinType).getRemote();
     }
