@@ -40,6 +40,9 @@ import java.io.IOException;
 import java.nio.DoubleBuffer;
 import java.util.List;
 
+import net.minecraft.client.gui.GuiTextField;
+import java.util.function.Consumer;
+
 import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class GuiSkins extends GameGui implements ISkinUploadHandler {
@@ -63,6 +66,10 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
     private DoubleBuffer doubleBuffer;
 
     private float msgFadeOpacity = 0;
+    private GuiTextField passwordField;
+    private Consumer<String> pendingPasswordCallback;
+    private Button btnPasswordConfirm;
+    private Button btnPasswordCancel;
 
     private int lastMouseX = 0;
 
@@ -222,6 +229,14 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
         }))
                 .setTooltip(uploader.getGateway())
                 .setTooltipOffset(0, 10);
+
+        passwordField = new GuiTextField(999, fontRenderer, width / 2 - 100, height / 2 - 10, 200, 20);
+        passwordField.setMaxStringLength(64);
+        passwordField.setFocused(true);
+
+        addButton(btnPasswordConfirm = new Button(width / 2 - 100, height / 2 + 18, 95, 20, "OK", sender -> confirmPassword()));
+        addButton(btnPasswordCancel = new Button(width / 2 + 5, height / 2 + 18, 95, 20, "Отмена", sender -> closePasswordPrompt()));
+        setPasswordPromptVisible(false);
     }
 
     @Override
@@ -259,8 +274,9 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
         remotePlayer.setPreviewThinArms(thinArmType);
     }
 
+    @Override
     protected boolean canTakeEvents() {
-        return !chooser.pickingInProgress() && uploader.tryClearStatus() && msgFadeOpacity == 0;
+        return isPasswordPromptOpen() || (!chooser.pickingInProgress() && uploader.tryClearStatus() && msgFadeOpacity == 0);
     }
 
     @Override
@@ -272,6 +288,12 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
+        if (isPasswordPromptOpen()) {
+            passwordField.mouseClicked(mouseX, mouseY, button);
+            super.mouseClicked(mouseX, mouseY, button);
+            return;
+        }
+        
         if (canTakeEvents()) {
             super.mouseClicked(mouseX, mouseY, button);
 
@@ -297,6 +319,19 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
 
     @Override
     protected void keyTyped(char keyChar, int keyCode) throws IOException {
+        if (isPasswordPromptOpen()) {
+            if (keyCode == Keyboard.KEY_RETURN || keyCode == Keyboard.KEY_NUMPADENTER) {
+                confirmPassword();
+                return;
+            }
+            if (keyCode == Keyboard.KEY_ESCAPE) {
+                closePasswordPrompt();
+                return;
+            }
+            passwordField.textboxKeyTyped(keyChar, keyCode);
+            return;
+        }
+        
         if (canTakeEvents()) {
             if (keyCode == Keyboard.KEY_LEFT) {
                 updateCounter -= 5;
@@ -430,6 +465,14 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
             }
         }
 
+        if (isPasswordPromptOpen()) {
+            drawRect(0, 0, width, height, 0xB0000000);
+            drawCenteredString(fontRenderer, format("hdskins.password"), width / 2, height / 2 - 28, 0xffffff);
+            passwordField.drawTextBox();
+            btnPasswordConfirm.drawButton(mc, mouseX, mouseY, partialTick);
+            btnPasswordCancel.drawButton(mc, mouseX, mouseY, partialTick);
+        }
+
         depthMask(true);
         enableDepth();
     }
@@ -501,10 +544,45 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
         depthMask(false);
     }
 
-    private void punchServer(String uploadMsg) {
-        uploader.uploadSkin(uploadMsg).handle(CallableFutures.callback(this::updateButtons));
+    private boolean isPasswordPromptOpen() {
+        return pendingPasswordCallback != null;
+    }
 
-        updateButtons();
+    private void setPasswordPromptVisible(boolean visible) {
+        if (btnPasswordConfirm != null) btnPasswordConfirm.visible = visible;
+        if (btnPasswordCancel != null) btnPasswordCancel.visible = visible;
+        if (passwordField != null) {
+            passwordField.setVisible(visible);
+            passwordField.setFocused(visible);
+            if (visible) {
+                passwordField.setText("");
+            }
+        }
+    }
+
+    private void openPasswordPrompt(Consumer<String> onConfirm) {
+        pendingPasswordCallback = onConfirm;
+        setPasswordPromptVisible(true);
+    }
+
+    private void closePasswordPrompt() {
+        pendingPasswordCallback = null;
+        setPasswordPromptVisible(false);
+    }
+
+    private void confirmPassword() {
+        if (pendingPasswordCallback == null) return;
+        String pwd = passwordField.getText();
+        Consumer<String> cb = pendingPasswordCallback;
+        closePasswordPrompt();
+        cb.accept(pwd);
+    }
+
+    private void punchServer(String uploadMsg) {
+        openPasswordPrompt(password -> {
+            uploader.uploadSkin(uploadMsg, password).handle(CallableFutures.callback(this::updateButtons));
+            updateButtons();
+        });
     }
 
     private void updateButtons() {
