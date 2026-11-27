@@ -11,6 +11,7 @@ hdskins.error.mojang=Ошибка Mojang API
 hdskins.error.mojang.wait=Пожалуйста, подождите %d минут(ы)...
 hdskins.error.noserver=Не найдено ни одного скин-сервера
 hdskins.error.offline=- Сервер не в сети -
+hdskins.password=Введите пароль для изменения скина:
 
 hdskins.open.title=Выберите ваш скин
 hdskins.save.title=Выберите имя файла для сохранения...
