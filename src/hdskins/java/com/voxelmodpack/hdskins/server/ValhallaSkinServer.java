@@ -166,15 +166,24 @@ public class ValhallaSkinServer implements SkinServer {
         }
     }
 
+    private String resolveUserIdentifier(GameProfile profile) {
+        Preconditions.checkNotNull(profile, "profile required");
+        if (profile.getName() != null && !profile.getName().trim().isEmpty()) {
+            return profile.getName().trim();
+        }
+        Preconditions.checkNotNull(profile.getId(), "profile id or name required");
+        return UUIDTypeAdapter.fromUUID(profile.getId());
+    }
+
     private URI buildUserTextureUri(GameProfile profile, MinecraftProfileTexture.Type textureType) {
-        String user = UUIDTypeAdapter.fromUUID(profile.getId());
+        String user = resolveUserIdentifier(profile);
         String skinType = textureType.name().toLowerCase(Locale.US);
         return URI.create(String.format("%s/user/%s/%s", this.getApiPrefix(), user, skinType));
     }
 
     private URI getTexturesURI(GameProfile profile) {
-        Preconditions.checkNotNull(profile.getId(), "profile id required for skins");
-        return URI.create(String.format("%s/user/%s", this.getApiPrefix(), UUIDTypeAdapter.fromUUID(profile.getId())));
+        String user = resolveUserIdentifier(profile);
+        return URI.create(String.format("%s/user/%s", this.getApiPrefix(), user));
     }
 
     private URI getHandshakeURI() {
