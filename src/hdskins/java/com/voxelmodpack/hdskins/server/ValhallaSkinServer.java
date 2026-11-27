@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.*;
 
-@ServerType("valhalla")
+@ServerType("Minequestria")
 public class ValhallaSkinServer implements SkinServer {
     private static final String API_PREFIX = "/api/v1";
 
@@ -192,7 +192,7 @@ public class ValhallaSkinServer implements SkinServer {
 
     @Override
     public String toString() {
-        return new IndentedToStringStyle.Builder("Minequestria")
+        return new IndentedToStringStyle.Builder(this)
                 .append("address", address)
                 .toString();
     }
