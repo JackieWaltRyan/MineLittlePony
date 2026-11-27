@@ -1,8 +1,8 @@
-# Mine Little Pony
+# Mine Little Pony (Minequestria version)
 
 Turns players and mobs into ponies.
 
-http://minelittlepony-mod.com
+https://mine.equestria.top
 
 ## Building
 
