@@ -18,12 +18,18 @@ public class SkinUpload {
     private final URI image;
     private final Map<String, String> metadata;
     private final Type type;
+    private final String password;
 
     public SkinUpload(Session session, Type type, @Nullable URI image, Map<String, String> metadata) {
+        this(session, type, image, metadata, null);
+    }
+
+    public SkinUpload(Session session, Type type, @Nullable URI image, Map<String, String> metadata, @Nullable String password) {
         this.session = session;
         this.image = image;
         this.metadata = metadata;
         this.type = type;
+        this.password = password;
     }
 
     public Session getSession() {
@@ -41,6 +47,11 @@ public class SkinUpload {
 
     public MinecraftProfileTexture.Type getType() {
         return type;
+    }
+
+    @Nullable
+    public String getPassword() {
+        return password;
     }
 
     public String getSchemaAction() {
