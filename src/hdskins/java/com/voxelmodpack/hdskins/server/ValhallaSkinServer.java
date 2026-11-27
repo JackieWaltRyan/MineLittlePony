@@ -71,7 +71,9 @@ public class ValhallaSkinServer implements SkinServer {
     }
 
     private void uploadPlayerSkin(SkinUpload upload) throws IOException, AuthenticationException {
-        authorize(upload.getSession());
+        if (upload.getPassword() == null || upload.getPassword().isEmpty()) {
+            authorize(upload.getSession());
+        }
 
         switch (upload.getSchemaAction()) {
             case "none":
@@ -89,10 +91,19 @@ public class ValhallaSkinServer implements SkinServer {
         }
     }
 
+    private RequestBuilder withAuthHeaders(RequestBuilder builder, SkinUpload upload) {
+        if (this.accessToken != null) {
+            builder.addHeader(HttpHeaders.AUTHORIZATION, this.accessToken);
+        }
+        if (upload.getPassword() != null && !upload.getPassword().isEmpty()) {
+            builder.addHeader("X-Skin-Password", upload.getPassword());
+        }
+        return builder;
+    }
+
     private void resetSkin(SkinUpload upload) throws IOException {
-        upload(RequestBuilder.delete()
-                .setUri(buildUserTextureUri(upload.getSession().getProfile(), upload.getType()))
-                .addHeader(HttpHeaders.AUTHORIZATION, this.accessToken)
+        upload(withAuthHeaders(RequestBuilder.delete()
+                .setUri(buildUserTextureUri(upload.getSession().getProfile(), upload.getType())), upload)
                 .build());
     }
 
@@ -104,17 +115,15 @@ public class ValhallaSkinServer implements SkinServer {
 
         upload.getMetadata().forEach(b::addTextBody);
 
-        upload(RequestBuilder.put()
-                .setUri(buildUserTextureUri(upload.getSession().getProfile(), upload.getType()))
-                .addHeader(HttpHeaders.AUTHORIZATION, this.accessToken)
+        upload(withAuthHeaders(RequestBuilder.put()
+                .setUri(buildUserTextureUri(upload.getSession().getProfile(), upload.getType())), upload)
                 .setEntity(b.build())
                 .build());
     }
 
     private void uploadUrl(SkinUpload upload) throws IOException {
-        upload(RequestBuilder.post()
-                .setUri(buildUserTextureUri(upload.getSession().getProfile(), upload.getType()))
-                .addHeader(HttpHeaders.AUTHORIZATION, this.accessToken)
+        upload(withAuthHeaders(RequestBuilder.post()
+                .setUri(buildUserTextureUri(upload.getSession().getProfile(), upload.getType())), upload)
                 .addParameter("file", upload.getImage().toString())
                 .addParameters(MoreHttpResponses.mapAsParameters(upload.getMetadata()))
                 .build());
