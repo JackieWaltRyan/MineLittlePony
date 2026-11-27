@@ -186,12 +186,15 @@ public class SkinUploader implements Closeable {
         sendingSkin = true;
         status = statusMsg;
 
+        boolean isReset = "hdskins.request".equals(statusMsg);
+        URI imageUri = (!isReset && localSkin != null) ? localSkin.toURI() : null;
+
         return CompletableFuture.runAsync(() -> {
             try {
                 gateway.performSkinUpload(new SkinUpload(
                         mc.getSession(),
                         skinType,
-                        localSkin == null ? null : localSkin.toURI(),
+                        imageUri,
                         skinMetadata,
                         password
                 ));
