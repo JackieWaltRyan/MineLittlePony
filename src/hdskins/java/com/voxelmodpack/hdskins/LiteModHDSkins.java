@@ -37,7 +37,7 @@ public class LiteModHDSkins implements InitCompleteListener, ViewportListener, C
 
     @Expose
     public List<SkinServer> skin_servers = Lists.newArrayList(
-            new ValhallaSkinServer("http://localhost:8080")
+            new ValhallaSkinServer("http://localhost:1125")
     );
 
     @Expose
@@ -55,7 +55,7 @@ public class LiteModHDSkins implements InitCompleteListener, ViewportListener, C
 
     @Override
     public String getName() {
-        return "HD Skins";
+        return "Minequestria Skins";
     }
 
     @Override
