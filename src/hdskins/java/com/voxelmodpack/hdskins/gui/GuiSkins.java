@@ -274,7 +274,6 @@ public class GuiSkins extends GameGui implements ISkinUploadHandler {
         remotePlayer.setPreviewThinArms(thinArmType);
     }
 
-    @Override
     protected boolean canTakeEvents() {
         return isPasswordPromptOpen() || (!chooser.pickingInProgress() && uploader.tryClearStatus() && msgFadeOpacity == 0);
     }
