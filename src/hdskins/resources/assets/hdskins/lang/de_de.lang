@@ -11,6 +11,7 @@ hdskins.error.mojang=Mojang API Fehler
 hdskins.error.mojang.wait=Bitte warte %d minuten
 hdskins.error.noserver=Es ist kein gültiges Skin Server verfügbar
 hdskins.error.offline=- Server Offline -
+hdskins.password=Geben Sie das Passwort ein, um den Skin zu ändern:
 
 hdskins.open.title=Suche dir ein skin aus
 hdskins.save.title=Wo soll dieses gegen gespeichert werden
