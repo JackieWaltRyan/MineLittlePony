@@ -26,6 +26,7 @@ import com.voxelmodpack.hdskins.server.SkinUpload;
 
 import java.io.Closeable;
 import java.io.File;
+import java.net.URI;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
