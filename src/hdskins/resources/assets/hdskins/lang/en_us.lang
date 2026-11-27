@@ -11,6 +11,7 @@ hdskins.error.mojang=Mojang API Error
 hdskins.error.mojang.wait=Please wait %d minutes
 hdskins.error.noserver=There was no valid skin server available
 hdskins.error.offline=- Server Offline -
+hdskins.password=Enter password to change skin:
 
 hdskins.open.title=Choose skin
 hdskins.save.title=Choose save location
