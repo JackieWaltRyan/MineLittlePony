@@ -3,8 +3,8 @@
   "insert": "END",
   "servers": [
     {
-      "type": "valhalla",
-      "address": "http://localhost:8080"
+      "type": "Minequestria",
+      "address": "http://localhost:1125"
     }
   ]
 }
